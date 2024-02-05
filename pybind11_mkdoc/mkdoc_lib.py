@@ -222,6 +222,11 @@ def extract(filename, node, prefix, output):
         for i in node.get_children():
             extract(filename, i, sub_prefix, output)
     if node.kind in PRINT_LIST:
+        # Skip forward declarations
+        if node.kind == CursorKind.STRUCT_DECL or node.kind == CursorKind.CLASS_DECL:
+            definition = node.get_definition()
+            if not definition:
+                return
         comment = d(node.raw_comment) if node.raw_comment is not None else ''
         comment = process_comment(comment)
         sub_prefix = prefix
